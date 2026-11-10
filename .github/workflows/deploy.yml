@@ -1,0 +1,31 @@
+
+name: Deploy Portfolio to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::768649629800:role/GitHubPortfolioSSMDeployPolicy
+          aws-region: ap-south-1
+
+      - name: Deploy using AWS SSM
+        run: |
+          aws ssm send-command \
+            --instance-ids "i-03a00fce56937b1c8" \
+            --document-name "AWS-RunShellScript" \
+            --parameters '{"commands":["set -e","cd /home/ubuntu/portfoliowebsite","git pull --ff-only origin main","sudo mkdir -p /var/www/html/assets","sudo cp index.html styles.css script.js /var/www/html/","sudo cp -r assets/. /var/www/html/assets/"]}' \
+            --region ap-south-1
+
