@@ -18,7 +18,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::768649629800:role/GitHubPortfolioDeployRole
+          role-to-assume: arn:aws:iam::768649629800:role/PortfolioSSMDeployPermission
           aws-region: ap-south-1
 
       - name: Send Deployment Command
